@@ -25,7 +25,7 @@
 
 import Foundation
 
-public class SHNUrlRouted: DebugPrintable {
+public class SHNUrlRouted: CustomDebugStringConvertible {
 	public let route: SHNUrlRoute
 	public let parameters: [String: String]
 
