@@ -3,7 +3,7 @@ Simple Router for Swift based on Laravel’s Router, though it’s lacking Larav
 
 ## Installation
 
-> _Note:_ SHNUrlRouter requires Swift 1.2 or later.
+> _Note:_ SHNUrlRouter requires Swift 2.0 or later.
 >
 > In order to use SHNUrlRouter with CocoaPods, you must have a minimum
 > deploy target of iOS 8 and using CocoaPods frameworks.
@@ -14,20 +14,20 @@ Simple Router for Swift based on Laravel’s Router, though it’s lacking Larav
 
 ```
 use_frameworks!
-pod 'SHNUrlRouter', '~> 1.0'
+pod 'SHNUrlRouter', '~> 1.1'
 ```
 
 ### Without CocoaPods
 
 If you’re not using Cocoapods, you can instead drag the `*.swift` files from this repository into your project.
 
-### Swift 2
+### Swift 1.2
 
-If you’re using this with Swift 2, be sure to use the swift2 branch.
+If you’re using this with Swift 1.2, you’ll need to use the 1.0 tag
 
 ```
 use_frameworks!
-pod 'SHNUrlRouter', git: 'https://github.com/shnhrrsn/SHNUrlRouter.git', :branch => 'swift2'
+pod 'SHNUrlRouter', '1.0'
 ```
 
 ## Basic Routing
@@ -36,10 +36,9 @@ Setting up the router is as simple as defining a couple of routes and providing 
 
 ```
 let router = SHNUrlRouter()
-weak var weakSelf = self
 
-router.register("feed") { (parameters) in
-	weakSelf?.tabBarController.selectedIndex = 0
+router.register("feed") { [weak self] (parameters) in
+	self?.tabBarController.selectedIndex = 0
 }
 ```
 
@@ -51,11 +50,11 @@ This will create a router and register a handler that switches to the first tab 
 You can specify route parameters to support more advanced routing:
 
 ```swift
-router.register("user/{id}/{section?}") { (parameters) in
- 	// Non-optional parameters are guaranteed to be in the parameters
- 	// dictionary, or the route won’t dispatch, so you can skip the
- 	// usual if let block if you’d like
- 	let id = parameters["id"]!
+router.register("user/{id}/{section?}") { [weak self] (parameters) in
+	// Non-optional parameters are guaranteed to be in the parameters
+	// dictionary, or the route won’t dispatch, so you can skip the
+	// usual guard let block if you’d like
+	let id = parameters["id"]!
 
 	let viewController = UserViewController(identifier: id)
 
@@ -65,7 +64,7 @@ router.register("user/{id}/{section?}") { (parameters) in
 		viewController.section = section
 	}
 
-	weakSelf?.tabBarController.presentViewController(viewController, animated: true, completion: nil)
+	self?.tabBarController.presentViewController(viewController, animated: true, completion: nil)
 }
 ```
 
@@ -119,25 +118,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	private let router = SHNUrlRouter()
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool {
-		weak var weakSelf = self
-
 		self.router.add("id", pattern: "[0-9]+")
 		self.router.add("section", pattern: "profile|activity")
 
-		self.router.register("feed") { (parameters) in
-			weakSelf?.tabBarController.selectedIndex = 0
+		self.router.register("feed") { [weak self] (parameters) in
+			self?.tabBarController.selectedIndex = 0
 		}
 
-		self.router.register("user/{id}/{section?}") { (parameters) in
-			if let stringId = parameters["id"], let id = Int(stringId) {
-				let viewController = UserViewController(identifier: id)
-
-				if let section = parameters["section"] {
-					viewController.section = section
-				}
-
-				weakSelf?.tabBarController.presentViewController(viewController, animated: true, completion: nil)
+		self.router.register("user/{id}/{section?}") { [weak self] (parameters) in
+			guard let stringId = parameters["id"], let id = Int(stringId) else {
+				return
 			}
+
+			let viewController = UserViewController(identifier: id)
+
+			if let section = parameters["section"] {
+				viewController.section = section
+			}
+
+			self?.tabBarController.presentViewController(viewController, animated: true, completion: nil)
 		}
 
 	}
