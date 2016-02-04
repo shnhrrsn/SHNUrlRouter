@@ -29,15 +29,15 @@ private typealias PatternRoutePair = (CompiledPattern, SHNUrlRoute)
 private typealias CompiledPattern = (NSRegularExpression, [String])
 
 private func regexReplace(expression: NSRegularExpression, replacement: String, target: NSMutableString) {
-	expression.replaceMatchesInString(target, options: nil, range: NSMakeRange(0, target.length), withTemplate: replacement)
+	expression.replaceMatchesInString(target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
 }
 
 public class SHNUrlRouter {
 	private var patterns = Array<PatternRoutePair>()
 	private var aliases = Dictionary<String, String>()
-	private let unescapePattern = NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: nil, error: nil)!
-	private let parameterPattern = NSRegularExpression(pattern: "\\{([a-zA-Z0-9_\\-]+)\\}", options: nil, error: nil)!
-	private let optionalParameterPattern = NSRegularExpression(pattern: "(\\\\\\/)?\\{([a-zA-Z0-9_\\-]+)\\?\\}", options: nil, error: nil)!
+	private let unescapePattern = try! NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: [])
+	private let parameterPattern = try! NSRegularExpression(pattern: "\\{([a-zA-Z0-9_\\-]+)\\}", options: [])
+	private let optionalParameterPattern = try! NSRegularExpression(pattern: "(\\\\\\/)?\\{([a-zA-Z0-9_\\-]+)\\?\\}", options: [])
 	private let slashCharacterSet = NSCharacterSet(charactersInString: "/")
 
 	public init() { }
@@ -45,8 +45,8 @@ public class SHNUrlRouter {
 	/**
 	Add an parameter alias
 
-	:param: alias Name of the parameter
-	:param: pattern Regex pattern to match on
+	- parameter alias: Name of the parameter
+	- parameter pattern: Regex pattern to match on
 	*/
 	public func add(alias: String, pattern: String) {
 		self.aliases[alias] = pattern
@@ -55,10 +55,10 @@ public class SHNUrlRouter {
 	/**
 	Register a route pattern
 
-	:param: pattern Route pattern
-	:param: handler Quick handler to call when route is dispatched
+	- parameter pattern: Route pattern
+	- parameter handler: Quick handler to call when route is dispatched
 
-	:returns: New route instance for the pattern
+	- returns: New route instance for the pattern
 	*/
 	public func register(routePattern: String, handler: SHNUrlRouteQuickHandler) -> SHNUrlRoute {
 		return self.register([routePattern], handler: handler)
@@ -67,10 +67,10 @@ public class SHNUrlRouter {
 	/**
 	Register route patterns
 
-	:param: pattern Route patterns
-	:param: handler Quick handler to call when route is dispatched
+	- parameter pattern: Route patterns
+	- parameter handler: Quick handler to call when route is dispatched
 
-	:returns: New route instance for the patterns
+	- returns: New route instance for the patterns
 	*/
 	public func register(routePatterns: [String], handler: SHNUrlRouteQuickHandler) -> SHNUrlRoute {
 		return self.registerFull(routePatterns) { (url, route, parameters) in
@@ -81,10 +81,10 @@ public class SHNUrlRouter {
 	/**
 	Register a route pattern with full handler
 
-	:param: pattern Route pattern
-	:param: handler Full handler to call when route is dispatched
+	- parameter pattern: Route pattern
+	- parameter handler: Full handler to call when route is dispatched
 
-	:returns: New route instance for the pattern
+	- returns: New route instance for the pattern
 	*/
 	public func registerFull(routePattern: String, handler: SHNUrlRouteHandler) -> SHNUrlRoute {
 		return self.registerFull([routePattern], handler: handler)
@@ -93,10 +93,10 @@ public class SHNUrlRouter {
 	/**
 	Register route patterns with full handler
 
-	:param: pattern Route patterns
-	:param: handler Full handler to call when route is dispatched
+	- parameter pattern: Route patterns
+	- parameter handler: Full handler to call when route is dispatched
 
-	:returns: New route instance for the patterns
+	- returns: New route instance for the patterns
 	*/
 	public func registerFull(routePatterns: [String], handler: SHNUrlRouteHandler) -> SHNUrlRoute {
 		assert(routePatterns.count > 0, "Route patterns must contain at least one pattern")
@@ -113,7 +113,7 @@ public class SHNUrlRouter {
 	}
 
 	private func normalizePath(path: String?) -> String {
-		if let path = path?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) where count(path) > 0 {
+		if let path = path?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) where path.characters.count > 0 {
 			return "/" + path.stringByTrimmingCharactersInSet(self.slashCharacterSet)
 		} else {
 			return "/"
@@ -122,19 +122,19 @@ public class SHNUrlRouter {
 
 	private func compilePattern(pattern: String) -> CompiledPattern {
 		// Escape pattern
-		var compiled = NSMutableString(string: NSRegularExpression.escapedPatternForString(self.normalizePath(pattern)))
+		let compiled = NSMutableString(string: NSRegularExpression.escapedPatternForString(self.normalizePath(pattern)))
 
 		// Unescape path parameters
-		regexReplace(self.unescapePattern, "$1", compiled)
+		regexReplace(self.unescapePattern, replacement: "$1", target: compiled)
 
 		// Extract out optional parameters so we have just {parameter} instead of {parameter?}
-		regexReplace(self.optionalParameterPattern, "(?:$1{$2})?", compiled)
+		regexReplace(self.optionalParameterPattern, replacement: "(?:$1{$2})?", target: compiled)
 
 		// Compile captures since unfortunately Foundation doesnt’t support named groups
 		var captures = Array<String>()
 
-		self.parameterPattern.enumerateMatchesInString(String(compiled), options: nil, range: NSMakeRange(0, compiled.length)) { (match, _, _) in
-			if match.numberOfRanges > 1 {
+		self.parameterPattern.enumerateMatchesInString(String(compiled), options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
+			if let match = match where match.numberOfRanges > 1 {
 				let range = match.rangeAtIndex(1)
 
 				if range.location != NSNotFound {
@@ -144,18 +144,17 @@ public class SHNUrlRouter {
 		}
 
 		for alias in self.aliases {
-			compiled.replaceOccurrencesOfString("{\(alias.0)}", withString: "(\(alias.1))", options: nil, range: NSMakeRange(0, compiled.length))
+			compiled.replaceOccurrencesOfString("{\(alias.0)}", withString: "(\(alias.1))", options: [], range: NSMakeRange(0, compiled.length))
 		}
 
-		regexReplace(self.parameterPattern, "([^\\/]+)", compiled)
+		regexReplace(self.parameterPattern, replacement: "([^\\/]+)", target: compiled)
 		compiled.insertString("^", atIndex: 0)
 		compiled.appendString("$")
 
-		var error: NSError?
-
-		if let expression = NSRegularExpression(pattern: String(compiled), options: nil, error: &error) {
+		do {
+			let expression = try NSRegularExpression(pattern: String(compiled), options: [])
 			return CompiledPattern(expression, captures)
-		} else {
+		} catch let error as NSError {
 			fatalError("Error compiling pattern: \(compiled), error: \(error)")
 		}
 	}
@@ -163,10 +162,9 @@ public class SHNUrlRouter {
 	/**
 	Route a URL and get the routed instance back
 
-	:param: url URL string to route
+	- parameter url: URL string to route
 
-	:returns: Instance of SHNUrlRouted with binded parameters
-	if matched, nil if route isn’t supported
+	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
 	public func route(url: String) -> SHNUrlRouted? {
 		if let url = NSURL(string: url) {
@@ -179,17 +177,16 @@ public class SHNUrlRouter {
 	/**
 	Route a URL and get the routed instance back
 
-	:param: url URL to route
+	- parameter url: URL to route
 
-	:returns: Instance of SHNUrlRouted with binded parameters
-	if matched, nil if route isn’t supported
+	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
 	public func route(url: NSURL) -> SHNUrlRouted? {
 		let path = self.normalizePath(url.path)
-		let range = NSMakeRange(0, count(path))
+		let range = NSMakeRange(0, path.characters.count)
 
 		for pattern in patterns {
-			if let match = pattern.0.0.firstMatchInString(path, options: nil, range: range) {
+			if let match = pattern.0.0.firstMatchInString(path, options: [], range: range) {
 				var parameters = Dictionary<String, String>()
 				let parameterKeys = pattern.0.1
 
@@ -217,10 +214,9 @@ public class SHNUrlRouter {
 	/**
 	Dispatch a url
 
-	:param: url URL string to dispatch
+	- parameter url: URL string to dispatch
 
-	:returns: True if dispatched, false if unable to dispatch which
-	occurs if url isn’t routable
+	- returns: True if dispatched, false if unable to dispatch which occurs if url isn’t routable
 	*/
 	public func dispatch(url: String) -> Bool {
 		if let url = NSURL(string: url) {
@@ -233,10 +229,9 @@ public class SHNUrlRouter {
 	/**
 	Dispatch a url
 
-	:param: url URL to dispatch
+	- parameter url: URL to dispatch
 
-	:returns: True if dispatched, false if unable to dispatch which
-	occurs if url isn’t routable
+	- returns: True if dispatched, false if unable to dispatch which occurs if url isn’t routable
 	*/
 	public func dispatch(url: NSURL) -> Bool {
 		if let routed = self.route(url) {

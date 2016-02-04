@@ -28,7 +28,7 @@ import Foundation
 public typealias SHNUrlRouteQuickHandler = ([String: String]) -> Void
 public typealias SHNUrlRouteHandler = (NSURL, SHNUrlRoute, [String: String]) -> Void
 
-public class SHNUrlRoute: DebugPrintable {
+public class SHNUrlRoute: CustomDebugStringConvertible {
 
 	private weak var router: SHNUrlRouter?
 
@@ -51,9 +51,9 @@ public class SHNUrlRoute: DebugPrintable {
 	/**
 	Add a route pattern alias to this route
 
-	:param: pattern Route pattern
+	- parameter pattern: Route pattern
 
-	:returns: Current route instance for chaining
+	- returns: Current route instance for chaining
 	*/
 	public func addAlias(pattern: String) -> SHNUrlRoute {
 		return self.addAliases([pattern])
@@ -62,9 +62,9 @@ public class SHNUrlRoute: DebugPrintable {
 	/**
 	Add route pattern aliases to this route
 
-	:param: patterns Route patterns
+	- parameter patterns: Route patterns
 
-	:returns: Current route instance for chaining
+	- returns: Current route instance for chaining
 	*/
 	public func addAliases(patterns: [String]) -> SHNUrlRoute {
 		self.router?.register(patterns, route: self)
