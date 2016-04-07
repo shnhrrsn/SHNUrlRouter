@@ -25,24 +25,33 @@
 
 import Foundation
 
-public typealias SHNUrlRouteQuickHandler = ([String: String]) -> Void
-public typealias SHNUrlRouteHandler = (NSURL, SHNUrlRoute, [String: String]) -> Void
+public typealias UrlRouteQuickHandler = ([String: String]) -> Void
+public typealias UrlRouteHandler = (NSURL, UrlRoute, [String: String]) -> Void
 
-public class SHNUrlRoute: CustomDebugStringConvertible {
+@available(*, deprecated=1.2, renamed="UrlRoute", message="Use non-prefixed UrlRoute instead")
+public typealias SHNUrlRoute = UrlRoute
 
-	private weak var router: SHNUrlRouter?
+@available(*, deprecated=1.2, renamed="UrlRouteQuickHandler", message="Use non-prefixed UrlRouteQuickHandler instead")
+public typealias SHNUrlRouteQuickHandler = UrlRouteQuickHandler
+
+@available(*, deprecated=1.2, renamed="UrlRouteHandler", message="Use non-prefixed UrlRouteHandler instead")
+public typealias SHNUrlRouteHandler = UrlRouteHandler
+
+public class UrlRoute: CustomDebugStringConvertible {
+
+	private weak var router: UrlRouter?
 
 	/** Original route pattern this route was created with */
 	public let pattern: String
 
 	/** Route handler to use during dispatching */
-	public let handler: SHNUrlRouteHandler
+	public let handler: UrlRouteHandler
 
 	public var debugDescription: String {
 		return self.pattern
 	}
 
-	public init(router: SHNUrlRouter, pattern: String, handler: SHNUrlRouteHandler) {
+	public init(router: UrlRouter, pattern: String, handler: UrlRouteHandler) {
 		self.pattern = pattern
 		self.router = router
 		self.handler = handler
@@ -55,7 +64,7 @@ public class SHNUrlRoute: CustomDebugStringConvertible {
 
 	- returns: Current route instance for chaining
 	*/
-	public func addAlias(pattern: String) -> SHNUrlRoute {
+	public func addAlias(pattern: String) -> UrlRoute {
 		return self.addAliases([pattern])
 	}
 
@@ -66,7 +75,7 @@ public class SHNUrlRoute: CustomDebugStringConvertible {
 
 	- returns: Current route instance for chaining
 	*/
-	public func addAliases(patterns: [String]) -> SHNUrlRoute {
+	public func addAliases(patterns: [String]) -> UrlRoute {
 		self.router?.register(patterns, route: self)
 		return self
 	}

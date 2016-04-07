@@ -25,14 +25,17 @@
 
 import Foundation
 
-private typealias PatternRoutePair = (CompiledPattern, SHNUrlRoute)
+private typealias PatternRoutePair = (CompiledPattern, UrlRoute)
 private typealias CompiledPattern = (NSRegularExpression, [String])
 
 private func regexReplace(expression: NSRegularExpression, replacement: String, target: NSMutableString) {
 	expression.replaceMatchesInString(target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
 }
 
-public class SHNUrlRouter {
+@available(*, deprecated=1.2, renamed="UrlRouter", message="Use non-prefixed UrlRouter instead")
+public typealias SHNUrlRouter = UrlRouter
+
+public class UrlRouter {
 	private var patterns = Array<PatternRoutePair>()
 	private var aliases = Dictionary<String, String>()
 	private let unescapePattern = try! NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: [])
@@ -60,7 +63,7 @@ public class SHNUrlRouter {
 
 	- returns: New route instance for the pattern
 	*/
-	public func register(routePattern: String, handler: SHNUrlRouteQuickHandler) -> SHNUrlRoute {
+	public func register(routePattern: String, handler: UrlRouteQuickHandler) -> UrlRoute {
 		return self.register([routePattern], handler: handler)
 	}
 
@@ -72,7 +75,7 @@ public class SHNUrlRouter {
 
 	- returns: New route instance for the patterns
 	*/
-	public func register(routePatterns: [String], handler: SHNUrlRouteQuickHandler) -> SHNUrlRoute {
+	public func register(routePatterns: [String], handler: UrlRouteQuickHandler) -> UrlRoute {
 		return self.registerFull(routePatterns) { (url, route, parameters) in
 			handler(parameters)
 		}
@@ -86,7 +89,7 @@ public class SHNUrlRouter {
 
 	- returns: New route instance for the pattern
 	*/
-	public func registerFull(routePattern: String, handler: SHNUrlRouteHandler) -> SHNUrlRoute {
+	public func registerFull(routePattern: String, handler: UrlRouteHandler) -> UrlRoute {
 		return self.registerFull([routePattern], handler: handler)
 	}
 
@@ -98,15 +101,15 @@ public class SHNUrlRouter {
 
 	- returns: New route instance for the patterns
 	*/
-	public func registerFull(routePatterns: [String], handler: SHNUrlRouteHandler) -> SHNUrlRoute {
+	public func registerFull(routePatterns: [String], handler: UrlRouteHandler) -> UrlRoute {
 		assert(routePatterns.count > 0, "Route patterns must contain at least one pattern")
 
-		let route = SHNUrlRoute(router: self, pattern: routePatterns.first!, handler: handler)
+		let route = UrlRoute(router: self, pattern: routePatterns.first!, handler: handler)
 		self.register(routePatterns, route: route)
 		return route
 	}
 
-	internal func register(routePatterns: [String], route: SHNUrlRoute) {
+	internal func register(routePatterns: [String], route: UrlRoute) {
 		for routePattern in routePatterns {
 			self.patterns.append(PatternRoutePair(self.compilePattern(routePattern), route))
 		}
@@ -166,7 +169,7 @@ public class SHNUrlRouter {
 
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
-	public func route(url: String) -> SHNUrlRouted? {
+	public func route(url: String) -> UrlRouted? {
 		if let url = NSURL(string: url) {
 			return self.route(url)
 		} else {
@@ -181,7 +184,7 @@ public class SHNUrlRouter {
 
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
-	public func route(url: NSURL) -> SHNUrlRouted? {
+	public func route(url: NSURL) -> UrlRouted? {
 		let path = self.normalizePath(url.path)
 		let range = NSMakeRange(0, path.characters.count)
 
@@ -204,7 +207,7 @@ public class SHNUrlRouter {
 					}
 				}
 
-				return SHNUrlRouted(route: pattern.1, parameters: parameters)
+				return UrlRouted(route: pattern.1, parameters: parameters)
 			}
 		}
 

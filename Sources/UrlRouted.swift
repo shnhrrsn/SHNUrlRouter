@@ -25,11 +25,14 @@
 
 import Foundation
 
-public class SHNUrlRouted: CustomDebugStringConvertible {
-	public let route: SHNUrlRoute
+@available(*, deprecated=1.2, renamed="UrlRouted", message="Use non-prefixed UrlRouted instead")
+public typealias SHNUrlRouted = UrlRouted
+
+public class UrlRouted: CustomDebugStringConvertible {
+	public let route: UrlRoute
 	public let parameters: [String: String]
 
-	public init(route: SHNUrlRoute, parameters: [String: String]) {
+	public init(route: UrlRoute, parameters: [String: String]) {
 		self.route = route
 		self.parameters = parameters
 	}
