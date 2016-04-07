@@ -191,7 +191,7 @@ public class SHNUrlRouter {
 				let parameterKeys = pattern.0.1
 
 				if parameterKeys.count > 0 {
-					for var i = 1; i < match.numberOfRanges; i++ {
+					for i in 1..<match.numberOfRanges {
 						let range = match.rangeAtIndex(i)
 
 						if range.location != NSNotFound {
