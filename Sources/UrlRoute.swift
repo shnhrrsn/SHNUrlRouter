@@ -28,14 +28,16 @@ import Foundation
 public typealias UrlRouteQuickHandler = ([String: String]) -> Void
 public typealias UrlRouteHandler = (NSURL, UrlRoute, [String: String]) -> Void
 
-@available(*, deprecated=1.2, renamed="UrlRoute", message="Use non-prefixed UrlRoute instead")
-public typealias SHNUrlRoute = UrlRoute
+#if !swift(>=3.0)
+	@available(*, deprecated=1.2, renamed="UrlRoute", message="Use non-prefixed UrlRoute instead")
+	public typealias SHNUrlRoute = UrlRoute
 
-@available(*, deprecated=1.2, renamed="UrlRouteQuickHandler", message="Use non-prefixed UrlRouteQuickHandler instead")
-public typealias SHNUrlRouteQuickHandler = UrlRouteQuickHandler
+	@available(*, deprecated=1.2, renamed="UrlRouteQuickHandler", message="Use non-prefixed UrlRouteQuickHandler instead")
+	public typealias SHNUrlRouteQuickHandler = UrlRouteQuickHandler
 
-@available(*, deprecated=1.2, renamed="UrlRouteHandler", message="Use non-prefixed UrlRouteHandler instead")
-public typealias SHNUrlRouteHandler = UrlRouteHandler
+	@available(*, deprecated=1.2, renamed="UrlRouteHandler", message="Use non-prefixed UrlRouteHandler instead")
+	public typealias SHNUrlRouteHandler = UrlRouteHandler
+#endif
 
 public class UrlRoute: CustomDebugStringConvertible {
 

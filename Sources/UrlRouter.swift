@@ -29,11 +29,13 @@ private typealias PatternRoutePair = (CompiledPattern, UrlRoute)
 private typealias CompiledPattern = (NSRegularExpression, [String])
 
 private func regexReplace(expression: NSRegularExpression, replacement: String, target: NSMutableString) {
-	expression.replaceMatchesInString(target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
+	expression.replaceMatches(in: target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
 }
 
-@available(*, deprecated=1.2, renamed="UrlRouter", message="Use non-prefixed UrlRouter instead")
-public typealias SHNUrlRouter = UrlRouter
+#if !swift(>=3.0)
+	@available(*, deprecated=1.2, renamed="UrlRouter", message="Use non-prefixed UrlRouter instead")
+	public typealias SHNUrlRouter = UrlRouter
+#endif
 
 public class UrlRouter {
 	private var patterns = Array<PatternRoutePair>()
@@ -41,7 +43,7 @@ public class UrlRouter {
 	private let unescapePattern = try! NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: [])
 	private let parameterPattern = try! NSRegularExpression(pattern: "\\{([a-zA-Z0-9_\\-]+)\\}", options: [])
 	private let optionalParameterPattern = try! NSRegularExpression(pattern: "(\\\\\\/)?\\{([a-zA-Z0-9_\\-]+)\\?\\}", options: [])
-	private let slashCharacterSet = NSCharacterSet(charactersInString: "/")
+	private let slashCharacterSet = NSCharacterSet(charactersIn: "/")
 
 	public init() { }
 
@@ -116,8 +118,8 @@ public class UrlRouter {
 	}
 
 	private func normalizePath(path: String?) -> String {
-		if let path = path?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) where path.characters.count > 0 {
-			return "/" + path.stringByTrimmingCharactersInSet(self.slashCharacterSet)
+		if let path = path?.trimmingCharacters(in: NSCharacterSet.whitespaceAndNewline()) where path.characters.count > 0 {
+			return "/" + path.trimmingCharacters(in: self.slashCharacterSet)
 		} else {
 			return "/"
 		}
@@ -125,7 +127,7 @@ public class UrlRouter {
 
 	private func compilePattern(pattern: String) -> CompiledPattern {
 		// Escape pattern
-		let compiled = NSMutableString(string: NSRegularExpression.escapedPatternForString(self.normalizePath(pattern)))
+		let compiled = NSMutableString(string: NSRegularExpression.escapedPattern(for: self.normalizePath(pattern)))
 
 		// Unescape path parameters
 		regexReplace(self.unescapePattern, replacement: "$1", target: compiled)
@@ -136,26 +138,26 @@ public class UrlRouter {
 		// Compile captures since unfortunately Foundation doesnt’t support named groups
 		var captures = Array<String>()
 
-		self.parameterPattern.enumerateMatchesInString(String(compiled), options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
+		self.parameterPattern.enumerateMatches(in: compiled as String, options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
 			if let match = match where match.numberOfRanges > 1 {
-				let range = match.rangeAtIndex(1)
+				let range = match.range(at: 1)
 
 				if range.location != NSNotFound {
-					captures.append(compiled.substringWithRange(range))
+					captures.append(compiled.substring(with: range))
 				}
 			}
 		}
 
 		for alias in self.aliases {
-			compiled.replaceOccurrencesOfString("{\(alias.0)}", withString: "(\(alias.1))", options: [], range: NSMakeRange(0, compiled.length))
+			compiled.replaceOccurrences(of: "{\(alias.0)}", with: "(\(alias.1))", options: [], range: NSMakeRange(0, compiled.length))
 		}
 
 		regexReplace(self.parameterPattern, replacement: "([^\\/]+)", target: compiled)
-		compiled.insertString("^", atIndex: 0)
-		compiled.appendString("$")
+		compiled.insert("^", at: 0)
+		compiled.append("$")
 
 		do {
-			let expression = try NSRegularExpression(pattern: String(compiled), options: [])
+			let expression = try NSRegularExpression(pattern: compiled as String, options: [])
 			return CompiledPattern(expression, captures)
 		} catch let error as NSError {
 			fatalError("Error compiling pattern: \(compiled), error: \(error)")
@@ -189,16 +191,16 @@ public class UrlRouter {
 		let range = NSMakeRange(0, path.characters.count)
 
 		for pattern in patterns {
-			if let match = pattern.0.0.firstMatchInString(path, options: [], range: range) {
+			if let match = pattern.0.0.firstMatch(in: path, options: [], range: range) {
 				var parameters = Dictionary<String, String>()
 				let parameterKeys = pattern.0.1
 
 				if parameterKeys.count > 0 {
 					for i in 1..<match.numberOfRanges {
-						let range = match.rangeAtIndex(i)
+						let range = match.range(at: i)
 
 						if range.location != NSNotFound {
-							let value = (path as NSString).substringWithRange(range)
+							let value = (path as NSString).substring(with: range)
 
 							if i <= parameterKeys.count {
 								parameters[parameterKeys[i - 1]] = value
@@ -246,3 +248,79 @@ public class UrlRouter {
 	}
 
 }
+
+#if !swift(>=3.0)
+
+	extension String {
+
+		func trimmingCharacters(in set: NSCharacterSet) -> String {
+			return self.stringByTrimmingCharactersInSet(set)
+		}
+
+	}
+
+	extension NSString {
+
+		func substring(with range: NSRange) -> String {
+			return self.substringWithRange(range)
+		}
+
+	}
+
+	extension NSMutableString {
+
+		func insert(string: String, at loc: Int) {
+			self.insertString(string, atIndex: loc)
+		}
+
+		func append(string: String) {
+			self.appendString(string)
+		}
+
+		func replaceOccurrences(of string: String, with replacement: String, options: NSStringCompareOptions, range searchRange: NSRange) -> Int {
+			return self.replaceOccurrencesOfString(string, withString: replacement, options: options, range: searchRange)
+		}
+
+	}
+
+	extension NSCharacterSet {
+
+		convenience init(charactersIn string: String) {
+			self.init(charactersInString: string)
+		}
+
+		class func whitespaceAndNewline() -> NSCharacterSet {
+			return self.whitespaceAndNewlineCharacterSet()
+		}
+
+	}
+
+	extension NSRegularExpression {
+
+		class func escapedPattern(for string: String) -> String {
+			return self.escapedPatternForString(string)
+		}
+
+		func enumerateMatches(in string: String, options: NSMatchingOptions, range: NSRange, usingBlock block: (NSTextCheckingResult?, NSMatchingFlags, UnsafeMutablePointer<ObjCBool>) -> Void) {
+			return self.enumerateMatchesInString(string, options: options, range: range, usingBlock: block)
+		}
+
+		func firstMatch(in string: String, options: NSMatchingOptions, range: NSRange) -> NSTextCheckingResult? {
+			return self.firstMatchInString(string, options: options, range: range)
+		}
+
+		func replaceMatches(in string: NSMutableString, options: NSMatchingOptions, range: NSRange, withTemplate templ: String) -> Int {
+			return self.replaceMatchesInString(string, options: options, range: range, withTemplate: templ)
+		}
+
+	}
+
+	extension NSTextCheckingResult {
+
+		func range(at idx: Int) -> NSRange {
+			return self.rangeAtIndex(idx)
+		}
+
+	}
+
+#endif
