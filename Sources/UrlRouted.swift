@@ -25,21 +25,19 @@
 
 import Foundation
 
-#if !swift(>=3.0)
-	@available(*, deprecated=1.2, renamed="UrlRouted", message="Use non-prefixed UrlRouted instead")
-	public typealias SHNUrlRouted = UrlRouted
-#endif
+@available(*, deprecated: 1.2, renamed: "UrlRouted", message: "Use non-prefixed UrlRouted instead")
+public typealias SHNUrlRouted = UrlRouted
 
-public class UrlRouted: CustomDebugStringConvertible {
-	public let route: UrlRoute
-	public let parameters: [String: String]
+open class UrlRouted: CustomDebugStringConvertible {
+	open let route: UrlRoute
+	open let parameters: [String: String]
 
 	public init(route: UrlRoute, parameters: [String: String]) {
 		self.route = route
 		self.parameters = parameters
 	}
 
-	public var debugDescription: String {
+	open var debugDescription: String {
 		if self.parameters.count > 0 {
 			return "\(self.route): \(self.parameters)"
 		} else {
