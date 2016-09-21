@@ -28,22 +28,20 @@ import Foundation
 private typealias PatternRoutePair = (CompiledPattern, UrlRoute)
 private typealias CompiledPattern = (NSRegularExpression, [String])
 
-private func regexReplace(expression: NSRegularExpression, replacement: String, target: NSMutableString) {
+private func regexReplace(_ expression: NSRegularExpression, replacement: String, target: NSMutableString) {
 	expression.replaceMatches(in: target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
 }
 
-#if !swift(>=3.0)
-	@available(*, deprecated=1.2, renamed="UrlRouter", message="Use non-prefixed UrlRouter instead")
-	public typealias SHNUrlRouter = UrlRouter
-#endif
+@available(*, deprecated: 1.2, renamed: "UrlRouter", message: "Use non-prefixed UrlRouter instead")
+public typealias SHNUrlRouter = UrlRouter
 
-public class UrlRouter {
-	private var patterns = Array<PatternRoutePair>()
-	private var aliases = Dictionary<String, String>()
-	private let unescapePattern = try! NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: [])
-	private let parameterPattern = try! NSRegularExpression(pattern: "\\{([a-zA-Z0-9_\\-]+)\\}", options: [])
-	private let optionalParameterPattern = try! NSRegularExpression(pattern: "(\\\\\\/)?\\{([a-zA-Z0-9_\\-]+)\\?\\}", options: [])
-	private let slashCharacterSet = NSCharacterSet(charactersIn: "/")
+open class UrlRouter {
+	fileprivate var patterns = [PatternRoutePair]()
+	fileprivate var aliases = [String: String]()
+	fileprivate let unescapePattern = try! NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: [])
+	fileprivate let parameterPattern = try! NSRegularExpression(pattern: "\\{([a-zA-Z0-9_\\-]+)\\}", options: [])
+	fileprivate let optionalParameterPattern = try! NSRegularExpression(pattern: "(\\\\\\/)?\\{([a-zA-Z0-9_\\-]+)\\?\\}", options: [])
+	fileprivate let slashCharacterSet = CharacterSet(charactersIn: "/")
 
 	public init() { }
 
@@ -53,7 +51,7 @@ public class UrlRouter {
 	- parameter alias: Name of the parameter
 	- parameter pattern: Regex pattern to match on
 	*/
-	public func add(alias: String, pattern: String) {
+	open func add(_ alias: String, pattern: String) {
 		self.aliases[alias] = pattern
 	}
 
@@ -65,7 +63,7 @@ public class UrlRouter {
 
 	- returns: New route instance for the pattern
 	*/
-	public func register(routePattern: String, handler: UrlRouteQuickHandler) -> UrlRoute {
+	@discardableResult open func register(_ routePattern: String, handler: @escaping UrlRouteQuickHandler) -> UrlRoute {
 		return self.register([routePattern], handler: handler)
 	}
 
@@ -77,7 +75,7 @@ public class UrlRouter {
 
 	- returns: New route instance for the patterns
 	*/
-	public func register(routePatterns: [String], handler: UrlRouteQuickHandler) -> UrlRoute {
+	@discardableResult open func register(_ routePatterns: [String], handler: @escaping UrlRouteQuickHandler) -> UrlRoute {
 		return self.registerFull(routePatterns) { (url, route, parameters) in
 			handler(parameters)
 		}
@@ -91,7 +89,7 @@ public class UrlRouter {
 
 	- returns: New route instance for the pattern
 	*/
-	public func registerFull(routePattern: String, handler: UrlRouteHandler) -> UrlRoute {
+	@discardableResult open func registerFull(_ routePattern: String, handler: @escaping UrlRouteHandler) -> UrlRoute {
 		return self.registerFull([routePattern], handler: handler)
 	}
 
@@ -103,7 +101,7 @@ public class UrlRouter {
 
 	- returns: New route instance for the patterns
 	*/
-	public func registerFull(routePatterns: [String], handler: UrlRouteHandler) -> UrlRoute {
+	@discardableResult open func registerFull(_ routePatterns: [String], handler: @escaping UrlRouteHandler) -> UrlRoute {
 		assert(routePatterns.count > 0, "Route patterns must contain at least one pattern")
 
 		let route = UrlRoute(router: self, pattern: routePatterns.first!, handler: handler)
@@ -111,21 +109,21 @@ public class UrlRouter {
 		return route
 	}
 
-	internal func register(routePatterns: [String], route: UrlRoute) {
+	internal func register(_ routePatterns: [String], route: UrlRoute) {
 		for routePattern in routePatterns {
 			self.patterns.append(PatternRoutePair(self.compilePattern(routePattern), route))
 		}
 	}
 
-	private func normalizePath(path: String?) -> String {
-		if let path = path?.trimmingCharacters(in: NSCharacterSet.whitespaceAndNewline()) where path.characters.count > 0 {
+	fileprivate func normalizePath(_ path: String?) -> String {
+		if let path = path?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) , path.characters.count > 0 {
 			return "/" + path.trimmingCharacters(in: self.slashCharacterSet)
 		} else {
 			return "/"
 		}
 	}
 
-	private func compilePattern(pattern: String) -> CompiledPattern {
+	fileprivate func compilePattern(_ pattern: String) -> CompiledPattern {
 		// Escape pattern
 		let compiled = NSMutableString(string: NSRegularExpression.escapedPattern(for: self.normalizePath(pattern)))
 
@@ -138,9 +136,9 @@ public class UrlRouter {
 		// Compile captures since unfortunately Foundation doesnt’t support named groups
 		var captures = Array<String>()
 
-		self.parameterPattern.enumerateMatches(in: compiled as String, options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
-			if let match = match where match.numberOfRanges > 1 {
-				let range = match.range(at: 1)
+		self.parameterPattern.enumerateMatches(in: String(compiled), options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
+			if let match = match , match.numberOfRanges > 1 {
+				let range = match.rangeAt(1)
 
 				if range.location != NSNotFound {
 					captures.append(compiled.substring(with: range))
@@ -157,7 +155,7 @@ public class UrlRouter {
 		compiled.append("$")
 
 		do {
-			let expression = try NSRegularExpression(pattern: compiled as String, options: [])
+			let expression = try NSRegularExpression(pattern: String(compiled), options: [])
 			return CompiledPattern(expression, captures)
 		} catch let error as NSError {
 			fatalError("Error compiling pattern: \(compiled), error: \(error)")
@@ -171,9 +169,9 @@ public class UrlRouter {
 
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
-	public func route(url: String) -> UrlRouted? {
-		if let url = NSURL(string: url) {
-			return self.route(url)
+	open func route(for url: String) -> UrlRouted? {
+		if let url = URL(string: url) {
+			return self.route(for: url)
 		} else {
 			return nil
 		}
@@ -186,18 +184,18 @@ public class UrlRouter {
 
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
-	public func route(url: NSURL) -> UrlRouted? {
+	open func route(for url: URL) -> UrlRouted? {
 		let path = self.normalizePath(url.path)
 		let range = NSMakeRange(0, path.characters.count)
 
 		for pattern in patterns {
 			if let match = pattern.0.0.firstMatch(in: path, options: [], range: range) {
-				var parameters = Dictionary<String, String>()
+				var parameters = [String: String]()
 				let parameterKeys = pattern.0.1
 
 				if parameterKeys.count > 0 {
 					for i in 1..<match.numberOfRanges {
-						let range = match.range(at: i)
+						let range = match.rangeAt(i)
 
 						if range.location != NSNotFound {
 							let value = (path as NSString).substring(with: range)
@@ -223,9 +221,9 @@ public class UrlRouter {
 
 	- returns: True if dispatched, false if unable to dispatch which occurs if url isn’t routable
 	*/
-	public func dispatch(url: String) -> Bool {
-		if let url = NSURL(string: url) {
-			return self.dispatch(url)
+	open func dispatch(for url: String) -> Bool {
+		if let url = URL(string: url) {
+			return self.dispatch(for: url)
 		} else {
 			return false
 		}
@@ -238,8 +236,8 @@ public class UrlRouter {
 
 	- returns: True if dispatched, false if unable to dispatch which occurs if url isn’t routable
 	*/
-	public func dispatch(url: NSURL) -> Bool {
-		if let routed = self.route(url) {
+	open func dispatch(for url: URL) -> Bool {
+		if let routed = self.route(for: url) {
 			routed.route.handler(url, routed.route, routed.parameters)
 			return true
 		} else {
@@ -248,79 +246,3 @@ public class UrlRouter {
 	}
 
 }
-
-#if !swift(>=3.0)
-
-	extension String {
-
-		func trimmingCharacters(in set: NSCharacterSet) -> String {
-			return self.stringByTrimmingCharactersInSet(set)
-		}
-
-	}
-
-	extension NSString {
-
-		func substring(with range: NSRange) -> String {
-			return self.substringWithRange(range)
-		}
-
-	}
-
-	extension NSMutableString {
-
-		func insert(string: String, at loc: Int) {
-			self.insertString(string, atIndex: loc)
-		}
-
-		func append(string: String) {
-			self.appendString(string)
-		}
-
-		func replaceOccurrences(of string: String, with replacement: String, options: NSStringCompareOptions, range searchRange: NSRange) -> Int {
-			return self.replaceOccurrencesOfString(string, withString: replacement, options: options, range: searchRange)
-		}
-
-	}
-
-	extension NSCharacterSet {
-
-		convenience init(charactersIn string: String) {
-			self.init(charactersInString: string)
-		}
-
-		class func whitespaceAndNewline() -> NSCharacterSet {
-			return self.whitespaceAndNewlineCharacterSet()
-		}
-
-	}
-
-	extension NSRegularExpression {
-
-		class func escapedPattern(for string: String) -> String {
-			return self.escapedPatternForString(string)
-		}
-
-		func enumerateMatches(in string: String, options: NSMatchingOptions, range: NSRange, usingBlock block: (NSTextCheckingResult?, NSMatchingFlags, UnsafeMutablePointer<ObjCBool>) -> Void) {
-			return self.enumerateMatchesInString(string, options: options, range: range, usingBlock: block)
-		}
-
-		func firstMatch(in string: String, options: NSMatchingOptions, range: NSRange) -> NSTextCheckingResult? {
-			return self.firstMatchInString(string, options: options, range: range)
-		}
-
-		func replaceMatches(in string: NSMutableString, options: NSMatchingOptions, range: NSRange, withTemplate templ: String) -> Int {
-			return self.replaceMatchesInString(string, options: options, range: range, withTemplate: templ)
-		}
-
-	}
-
-	extension NSTextCheckingResult {
-
-		func range(at idx: Int) -> NSRange {
-			return self.rangeAtIndex(idx)
-		}
-
-	}
-
-#endif

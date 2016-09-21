@@ -26,34 +26,32 @@
 import Foundation
 
 public typealias UrlRouteQuickHandler = ([String: String]) -> Void
-public typealias UrlRouteHandler = (NSURL, UrlRoute, [String: String]) -> Void
+public typealias UrlRouteHandler = (URL, UrlRoute, [String: String]) -> Void
 
-#if !swift(>=3.0)
-	@available(*, deprecated=1.2, renamed="UrlRoute", message="Use non-prefixed UrlRoute instead")
-	public typealias SHNUrlRoute = UrlRoute
+@available(*, deprecated: 1.2, renamed: "UrlRoute", message: "Use non-prefixed UrlRoute instead")
+public typealias SHNUrlRoute = UrlRoute
 
-	@available(*, deprecated=1.2, renamed="UrlRouteQuickHandler", message="Use non-prefixed UrlRouteQuickHandler instead")
-	public typealias SHNUrlRouteQuickHandler = UrlRouteQuickHandler
+@available(*, deprecated: 1.2, renamed: "UrlRouteQuickHandler", message: "Use non-prefixed UrlRouteQuickHandler instead")
+public typealias SHNUrlRouteQuickHandler = UrlRouteQuickHandler
 
-	@available(*, deprecated=1.2, renamed="UrlRouteHandler", message="Use non-prefixed UrlRouteHandler instead")
-	public typealias SHNUrlRouteHandler = UrlRouteHandler
-#endif
+@available(*, deprecated: 1.2, renamed: "UrlRouteHandler", message: "Use non-prefixed UrlRouteHandler instead")
+public typealias SHNUrlRouteHandler = UrlRouteHandler
 
-public class UrlRoute: CustomDebugStringConvertible {
+open class UrlRoute: CustomDebugStringConvertible {
 
-	private weak var router: UrlRouter?
+	fileprivate weak var router: UrlRouter?
 
 	/** Original route pattern this route was created with */
-	public let pattern: String
+	open let pattern: String
 
 	/** Route handler to use during dispatching */
-	public let handler: UrlRouteHandler
+	open let handler: UrlRouteHandler
 
-	public var debugDescription: String {
+	open var debugDescription: String {
 		return self.pattern
 	}
 
-	public init(router: UrlRouter, pattern: String, handler: UrlRouteHandler) {
+	public init(router: UrlRouter, pattern: String, handler: @escaping UrlRouteHandler) {
 		self.pattern = pattern
 		self.router = router
 		self.handler = handler
@@ -66,7 +64,7 @@ public class UrlRoute: CustomDebugStringConvertible {
 
 	- returns: Current route instance for chaining
 	*/
-	public func addAlias(pattern: String) -> UrlRoute {
+	open func addAlias(_ pattern: String) -> UrlRoute {
 		return self.addAliases([pattern])
 	}
 
@@ -77,7 +75,7 @@ public class UrlRoute: CustomDebugStringConvertible {
 
 	- returns: Current route instance for chaining
 	*/
-	public func addAliases(patterns: [String]) -> UrlRoute {
+	open func addAliases(_ patterns: [String]) -> UrlRoute {
 		self.router?.register(patterns, route: self)
 		return self
 	}
