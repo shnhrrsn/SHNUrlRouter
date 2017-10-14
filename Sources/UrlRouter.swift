@@ -116,7 +116,7 @@ open class UrlRouter {
 	}
 
 	fileprivate func normalizePath(_ path: String?) -> String {
-		if let path = path?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) , path.characters.count > 0 {
+		if let path = path?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines), path.count > 0 {
 			return "/" + path.trimmingCharacters(in: self.slashCharacterSet)
 		} else {
 			return "/"
@@ -138,7 +138,13 @@ open class UrlRouter {
 
 		self.parameterPattern.enumerateMatches(in: String(compiled), options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
 			if let match = match , match.numberOfRanges > 1 {
-				let range = match.rangeAt(1)
+				let range: NSRange
+
+				#if swift(>=4.0)
+					range = match.range(at: 1)
+				#else
+					range = match.rangeAt(1)
+				#endif
 
 				if range.location != NSNotFound {
 					captures.append(compiled.substring(with: range))
@@ -186,7 +192,7 @@ open class UrlRouter {
 	*/
 	open func route(for url: URL) -> UrlRouted? {
 		let path = self.normalizePath(url.path)
-		let range = NSMakeRange(0, path.characters.count)
+		let range = NSMakeRange(0, path.count)
 
 		for pattern in patterns {
 			if let match = pattern.0.0.firstMatch(in: path, options: [], range: range) {
@@ -195,7 +201,13 @@ open class UrlRouter {
 
 				if parameterKeys.count > 0 {
 					for i in 1..<match.numberOfRanges {
-						let range = match.rangeAt(i)
+						let range: NSRange
+
+						#if swift(>=4.0)
+							range = match.range(at: 1)
+						#else
+							range = match.rangeAt(1)
+						#endif
 
 						if range.location != NSNotFound {
 							let value = (path as NSString).substring(with: range)
@@ -244,5 +256,18 @@ open class UrlRouter {
 			return false
 		}
 	}
+
+}
+
+private extension String {
+
+	#if swift(>=4.0)
+	#else
+
+		var count: Int {
+			return self.characters.count
+		}
+
+	#endif
 
 }
