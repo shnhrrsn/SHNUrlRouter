@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FAADA1111CF6F0E5003DF266"
-               BuildableName = "SHNUrlRouter.framework"
-               BlueprintName = "SHNUrlRouter"
+               BuildableName = "SHNUrlRouter iOS.framework"
+               BlueprintName = "SHNUrlRouter iOS"
                ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FAADA1111CF6F0E5003DF266"
-            BuildableName = "SHNUrlRouter.framework"
-            BlueprintName = "SHNUrlRouter"
+            BuildableName = "SHNUrlRouter iOS.framework"
+            BlueprintName = "SHNUrlRouter iOS"
             ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -67,8 +67,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FAADA1111CF6F0E5003DF266"
-            BuildableName = "SHNUrlRouter.framework"
-            BlueprintName = "SHNUrlRouter"
+            BuildableName = "SHNUrlRouter iOS.framework"
+            BlueprintName = "SHNUrlRouter iOS"
             ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -85,8 +85,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FAADA1111CF6F0E5003DF266"
-            BuildableName = "SHNUrlRouter.framework"
-            BlueprintName = "SHNUrlRouter"
+            BuildableName = "SHNUrlRouter iOS.framework"
+            BlueprintName = "SHNUrlRouter iOS"
             ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

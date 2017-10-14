@@ -15,5 +15,3 @@ FOUNDATION_EXPORT double SHNUrlRouterVersionNumber;
 FOUNDATION_EXPORT const unsigned char SHNUrlRouterVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <SHNUrlRouter/PublicHeader.h>
-
-
