@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name         = "SHNUrlRouter"
-	s.version      = "1.2.0"
+	s.version      = "1.3.0"
 	s.summary      = "Simple Router for Swift"
 	s.homepage     = "https://github.com/shnhrrsn/SHNUrlRouter"
 	s.license      = "MIT"
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
 	s.platform     = :ios, "8.0"
 
-	s.ios.deployment_target  = "8.0"
+	s.ios.deployment_target  = "9.0"
 	s.tvos.deployment_target = "9.0"
 
 	s.source       = { :git => "https://github.com/shnhrrsn/SHNUrlRouter.git", :tag => s.version }

@@ -1,41 +1,29 @@
 # SHNUrlRouter
 Simple Router for Swift based on Laravel’s Router, though it’s lacking Laravel’s advanced features like groups and everything that comes with them.
 
-## Installation
+### Carthage
 
-> _Note:_ SHNUrlRouter requires Swift 2.0 or later.
->
-> In order to use SHNUrlRouter with CocoaPods, you must have a minimum
-> deploy target of iOS 8 and using CocoaPods frameworks.
->
-> If you need to support iOS 7, you’ll need to install without CocoaPods
+```
+github "shnhrrsn/SHNUrlRouter" ~> 1.3
+```
 
 ### CocoaPods
 
 ```
 use_frameworks!
-pod 'SHNUrlRouter', '~> 1.1'
+pod 'SHNUrlRouter', '~> 1.3'
 ```
 
-### Without CocoaPods
+### Without a dependency manager
 
-If you’re not using Cocoapods, you can instead drag the `*.swift` files from this repository into your project.
-
-### Swift 1.2
-
-If you’re using this with Swift 1.2, you’ll need to use the 1.0 tag
-
-```
-use_frameworks!
-pod 'SHNUrlRouter', '1.0'
-```
+Drag the `*.swift` files from this repository into your project.
 
 ## Basic Routing
 
 Setting up the router is as simple as defining a couple of routes and providing a handler to be triggered when they’re dispatched.
 
 ```
-let router = SHNUrlRouter()
+let router = UrlRouter()
 
 router.register("feed") { [weak self] (parameters) in
 	self?.tabBarController.selectedIndex = 0
@@ -115,7 +103,7 @@ func application(application: UIApplication, openURL url: NSURL, sourceApplicati
 
 ```swift
 class AppDelegate: UIResponder, UIApplicationDelegate {
-	private let router = SHNUrlRouter()
+	private let router = UrlRouter()
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool {
 		self.router.add("id", pattern: "[0-9]+")
