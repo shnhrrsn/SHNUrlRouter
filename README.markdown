@@ -1,6 +1,14 @@
 # SHNUrlRouter
 Simple Router for Swift based on Laravel’s Router, though it’s lacking Laravel’s advanced features like groups and everything that comes with them.
 
+## Swift 2.3 support
+
+Switch to the `swift23` branch.
+
+## Swift 3 support
+
+Switch to the `swift3` branch.
+
 ## Installation
 
 > _Note:_ SHNUrlRouter requires Swift 2.0 or later.
