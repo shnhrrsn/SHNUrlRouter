@@ -72,7 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				FAADA1141CF6F0E5003DF266 /* SHNUrlRouter */,
-				FAADA1201CF6F0E5003DF266 /* SHNUrlRouterTests */,
+				FAADA1201CF6F0E5003DF266 /* Tests */,
 				FAADA1131CF6F0E5003DF266 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,13 +97,13 @@
 			path = SHNUrlRouter;
 			sourceTree = "<group>";
 		};
-		FAADA1201CF6F0E5003DF266 /* SHNUrlRouterTests */ = {
+		FAADA1201CF6F0E5003DF266 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				FAADA1211CF6F0E5003DF266 /* SHNUrlRouterTests.swift */,
 				FAADA1231CF6F0E5003DF266 /* Info.plist */,
 			);
-			path = SHNUrlRouterTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		FAADA12C1CF6F0F2003DF266 /* Sources */ = {
@@ -114,7 +114,7 @@
 				FAADA12F1CF6F0F2003DF266 /* UrlRouter.swift */,
 			);
 			name = Sources;
-			path = ../../Sources;
+			path = ../Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

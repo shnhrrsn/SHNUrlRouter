@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "28AE5DED1F92C22B00C1BA82"
-               BuildableName = "SHNURLRouter_tvOS.framework"
+               BuildableName = "SHNURLRouter.framework"
                BlueprintName = "SHNURLRouter tvOS"
                ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
             </BuildableReference>
@@ -48,7 +48,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "28AE5DED1F92C22B00C1BA82"
-            BuildableName = "SHNURLRouter_tvOS.framework"
+            BuildableName = "SHNURLRouter.framework"
             BlueprintName = "SHNURLRouter tvOS"
             ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
          </BuildableReference>
@@ -66,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "28AE5DED1F92C22B00C1BA82"
-            BuildableName = "SHNURLRouter_tvOS.framework"
+            BuildableName = "SHNURLRouter.framework"
             BlueprintName = "SHNURLRouter tvOS"
             ReferencedContainer = "container:SHNUrlRouter.xcodeproj">
          </BuildableReference>
