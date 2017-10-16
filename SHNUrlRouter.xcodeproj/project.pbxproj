@@ -12,7 +12,7 @@
 		28AE5DF81F92C29300C1BA82 /* UrlRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADA12F1CF6F0F2003DF266 /* UrlRouter.swift */; };
 		28AE5DF91F92C29800C1BA82 /* SHNUrlRouter.h in Headers */ = {isa = PBXBuildFile; fileRef = FAADA1151CF6F0E5003DF266 /* SHNUrlRouter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAADA1161CF6F0E5003DF266 /* SHNUrlRouter.h in Headers */ = {isa = PBXBuildFile; fileRef = FAADA1151CF6F0E5003DF266 /* SHNUrlRouter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FAADA11D1CF6F0E5003DF266 /* SHNURLRouter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAADA1121CF6F0E5003DF266 /* SHNURLRouter.framework */; };
+		FAADA11D1CF6F0E5003DF266 /* SHNUrlRouter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAADA1121CF6F0E5003DF266 /* SHNUrlRouter.framework */; };
 		FAADA1221CF6F0E5003DF266 /* SHNUrlRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADA1211CF6F0E5003DF266 /* SHNUrlRouterTests.swift */; };
 		FAADA1301CF6F0F2003DF266 /* UrlRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADA12D1CF6F0F2003DF266 /* UrlRoute.swift */; };
 		FAADA1311CF6F0F2003DF266 /* UrlRouted.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADA12E1CF6F0F2003DF266 /* UrlRouted.swift */; };
@@ -30,8 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		28AE5DEE1F92C22B00C1BA82 /* SHNURLRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SHNURLRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAADA1121CF6F0E5003DF266 /* SHNURLRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SHNURLRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AE5DEE1F92C22B00C1BA82 /* SHNUrlRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SHNUrlRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAADA1121CF6F0E5003DF266 /* SHNUrlRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SHNUrlRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAADA1151CF6F0E5003DF266 /* SHNUrlRouter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHNUrlRouter.h; sourceTree = "<group>"; };
 		FAADA1171CF6F0E5003DF266 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAADA11C1CF6F0E5003DF266 /* SHNUrlRouterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SHNUrlRouterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAADA11D1CF6F0E5003DF266 /* SHNURLRouter.framework in Frameworks */,
+				FAADA11D1CF6F0E5003DF266 /* SHNUrlRouter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,9 +80,9 @@
 		FAADA1131CF6F0E5003DF266 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FAADA1121CF6F0E5003DF266 /* SHNURLRouter.framework */,
+				FAADA1121CF6F0E5003DF266 /* SHNUrlRouter.framework */,
 				FAADA11C1CF6F0E5003DF266 /* SHNUrlRouterTests.xctest */,
-				28AE5DEE1F92C22B00C1BA82 /* SHNURLRouter.framework */,
+				28AE5DEE1F92C22B00C1BA82 /* SHNUrlRouter.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -139,9 +139,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		28AE5DED1F92C22B00C1BA82 /* SHNURLRouter tvOS */ = {
+		28AE5DED1F92C22B00C1BA82 /* SHNUrlRouter tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 28AE5DF31F92C22C00C1BA82 /* Build configuration list for PBXNativeTarget "SHNURLRouter tvOS" */;
+			buildConfigurationList = 28AE5DF31F92C22C00C1BA82 /* Build configuration list for PBXNativeTarget "SHNUrlRouter tvOS" */;
 			buildPhases = (
 				28AE5DE91F92C22B00C1BA82 /* Sources */,
 				28AE5DEA1F92C22B00C1BA82 /* Frameworks */,
@@ -152,9 +152,9 @@
 			);
 			dependencies = (
 			);
-			name = "SHNURLRouter tvOS";
-			productName = "SHNURLRouter tvOS";
-			productReference = 28AE5DEE1F92C22B00C1BA82 /* SHNURLRouter.framework */;
+			name = "SHNUrlRouter tvOS";
+			productName = "SHNUrlRouter tvOS";
+			productReference = 28AE5DEE1F92C22B00C1BA82 /* SHNUrlRouter.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		FAADA1111CF6F0E5003DF266 /* SHNUrlRouter iOS */ = {
@@ -172,7 +172,7 @@
 			);
 			name = "SHNUrlRouter iOS";
 			productName = SHNUrlRouter;
-			productReference = FAADA1121CF6F0E5003DF266 /* SHNURLRouter.framework */;
+			productReference = FAADA1121CF6F0E5003DF266 /* SHNUrlRouter.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		FAADA11B1CF6F0E5003DF266 /* SHNUrlRouterTests */ = {
@@ -230,7 +230,7 @@
 			projectRoot = "";
 			targets = (
 				FAADA1111CF6F0E5003DF266 /* SHNUrlRouter iOS */,
-				28AE5DED1F92C22B00C1BA82 /* SHNURLRouter tvOS */,
+				28AE5DED1F92C22B00C1BA82 /* SHNUrlRouter tvOS */,
 				FAADA11B1CF6F0E5003DF266 /* SHNUrlRouterTests */,
 			);
 		};
@@ -314,11 +314,11 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SHNURLRouter/Info.plist;
+				INFOPLIST_FILE = SHNUrlRouter/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.enormego.SHNURLRouter;
-				PRODUCT_NAME = SHNURLRouter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.shnhrrsn.SHNUrlRouter;
+				PRODUCT_NAME = SHNUrlRouter;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -342,11 +342,11 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SHNURLRouter/Info.plist;
+				INFOPLIST_FILE = SHNUrlRouter/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.enormego.SHNURLRouter;
-				PRODUCT_NAME = SHNURLRouter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.shnhrrsn.SHNUrlRouter;
+				PRODUCT_NAME = SHNUrlRouter;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -475,7 +475,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.shnhrrsn.SHNUrlRouter;
-				PRODUCT_NAME = SHNURLRouter;
+				PRODUCT_NAME = SHNUrlRouter;
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
@@ -494,7 +494,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.shnhrrsn.SHNUrlRouter;
-				PRODUCT_NAME = SHNURLRouter;
+				PRODUCT_NAME = SHNUrlRouter;
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
@@ -528,7 +528,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		28AE5DF31F92C22C00C1BA82 /* Build configuration list for PBXNativeTarget "SHNURLRouter tvOS" */ = {
+		28AE5DF31F92C22C00C1BA82 /* Build configuration list for PBXNativeTarget "SHNUrlRouter tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				28AE5DF41F92C22C00C1BA82 /* Debug */,
