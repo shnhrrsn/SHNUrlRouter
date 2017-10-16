@@ -2,4 +2,6 @@
 project.xcworkspace
 xcuserdata
 *.xcworkspace/xcshareddata/
-Pods/*
+Pods/
+Carthage/
+*.framework.zip
