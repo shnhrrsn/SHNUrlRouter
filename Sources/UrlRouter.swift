@@ -204,9 +204,9 @@ open class UrlRouter {
 						let range: NSRange
 
 						#if swift(>=4.0)
-							range = match.range(at: 1)
+							range = match.range(at: i)
 						#else
-							range = match.rangeAt(1)
+							range = match.rangeAt(i)
 						#endif
 
 						if range.location != NSNotFound {
