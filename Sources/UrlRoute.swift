@@ -41,6 +41,10 @@ public struct UrlRoute: CustomDebugStringConvertible {
 		return self.pattern
 	}
 
+	public init(pattern: String, aliases: [String: String] = [:], handler: @escaping UrlRouteHandler = { _,_,_ in }) {
+		self.init(patterns: [ pattern ], aliases: aliases, handler: handler)
+	}
+
 	public init(patterns: [String], aliases: [String: String] = [:], handler: @escaping UrlRouteHandler = { _,_,_ in }) {
 		self.pattern = patterns[0]
 		self.handler = handler
