@@ -4,14 +4,14 @@ Simple Router for Swift based on Laravel’s Router, though it’s lacking Larav
 ### Carthage
 
 ```
-github "shnhrrsn/SHNUrlRouter" ~> 1.3.2
+github "shnhrrsn/SHNUrlRouter" ~> 2.0.0
 ```
 
 ### CocoaPods
 
 ```
 use_frameworks!
-pod 'SHNUrlRouter', '~> 1.3.2'
+pod 'SHNUrlRouter', '~> 2.0.0'
 ```
 
 ### Without a dependency manager
