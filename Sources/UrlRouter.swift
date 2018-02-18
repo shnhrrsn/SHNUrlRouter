@@ -25,20 +25,11 @@
 
 import Foundation
 
-private typealias PatternRoutePair = (CompiledPattern, UrlRoute)
-private typealias CompiledPattern = (NSRegularExpression, [String])
-
-private func regexReplace(_ expression: NSRegularExpression, replacement: String, target: NSMutableString) {
-	expression.replaceMatches(in: target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
-}
+private typealias PatternRoutePair = (UrlPattern, UrlRoute)
 
 open class UrlRouter {
 	fileprivate var patterns = [PatternRoutePair]()
 	fileprivate var aliases = [String: String]()
-	fileprivate let unescapePattern = try! NSRegularExpression(pattern: "\\\\([\\{\\}\\?])", options: [])
-	fileprivate let parameterPattern = try! NSRegularExpression(pattern: "\\{([a-zA-Z0-9_\\-]+)\\}", options: [])
-	fileprivate let optionalParameterPattern = try! NSRegularExpression(pattern: "(\\\\\\/)?\\{([a-zA-Z0-9_\\-]+)\\?\\}", options: [])
-	fileprivate let slashCharacterSet = CharacterSet(charactersIn: "/")
 
 	public init() { }
 
@@ -112,49 +103,8 @@ open class UrlRouter {
 		}
 	}
 
-	fileprivate func compilePattern(_ pattern: String) -> CompiledPattern {
-		// Escape pattern
-		let compiled = NSMutableString(string: NSRegularExpression.escapedPattern(for: pattern.normalizedPath()))
-
-		// Unescape path parameters
-		regexReplace(self.unescapePattern, replacement: "$1", target: compiled)
-
-		// Extract out optional parameters so we have just {parameter} instead of {parameter?}
-		regexReplace(self.optionalParameterPattern, replacement: "(?:$1{$2})?", target: compiled)
-
-		// Compile captures since unfortunately Foundation doesnt’t support named groups
-		var captures = Array<String>()
-
-		self.parameterPattern.enumerateMatches(in: String(compiled), options: [], range: NSMakeRange(0, compiled.length)) { (match, _, _) in
-			if let match = match , match.numberOfRanges > 1 {
-				let range: NSRange
-
-				#if swift(>=4.0)
-					range = match.range(at: 1)
-				#else
-					range = match.rangeAt(1)
-				#endif
-
-				if range.location != NSNotFound {
-					captures.append(compiled.substring(with: range))
-				}
-			}
-		}
-
-		for alias in self.aliases {
-			compiled.replaceOccurrences(of: "{\(alias.0)}", with: "(\(alias.1))", options: [], range: NSMakeRange(0, compiled.length))
-		}
-
-		regexReplace(self.parameterPattern, replacement: "([^\\/]+)", target: compiled)
-		compiled.insert("^", at: 0)
-		compiled.append("$")
-
-		do {
-			let expression = try NSRegularExpression(pattern: String(compiled), options: [])
-			return CompiledPattern(expression, captures)
-		} catch let error as NSError {
-			fatalError("Error compiling pattern: \(compiled), error: \(error)")
-		}
+	fileprivate func compilePattern(_ pattern: String) -> UrlPattern {
+		return UrlPattern.build(pattern: pattern, aliases: self.aliases)
 	}
 
 	/**
@@ -183,10 +133,10 @@ open class UrlRouter {
 		let path = url.path.normalizedPath()
 		let range = NSMakeRange(0, path.count)
 
-		for pattern in patterns {
-			if let match = pattern.0.0.firstMatch(in: path, options: [], range: range) {
+		for pattern in self.patterns {
+			if let match = pattern.0.expression.firstMatch(in: path, options: [], range: range) {
 				var parameters = [String: String]()
-				let parameterKeys = pattern.0.1
+				let parameterKeys = pattern.0.captures
 
 				if parameterKeys.count > 0 {
 					for i in 1..<match.numberOfRanges {

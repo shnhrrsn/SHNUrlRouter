@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		289590992039213500E5B803 /* UrlPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289590982039213500E5B803 /* UrlPattern.swift */; };
+		2895909A2039213500E5B803 /* UrlPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289590982039213500E5B803 /* UrlPattern.swift */; };
 		2895909C203921AB00E5B803 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2895909B203921AB00E5B803 /* String+Extension.swift */; };
 		2895909D203921AB00E5B803 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2895909B203921AB00E5B803 /* String+Extension.swift */; };
 		28AE5DF61F92C29000C1BA82 /* UrlRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADA12D1CF6F0F2003DF266 /* UrlRoute.swift */; };
@@ -32,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		289590982039213500E5B803 /* UrlPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlPattern.swift; sourceTree = "<group>"; };
 		2895909B203921AB00E5B803 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		28AE5DEE1F92C22B00C1BA82 /* SHNUrlRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SHNUrlRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAADA1121CF6F0E5003DF266 /* SHNUrlRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SHNUrlRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +118,7 @@
 				FAADA12D1CF6F0F2003DF266 /* UrlRoute.swift */,
 				FAADA12E1CF6F0F2003DF266 /* UrlRouted.swift */,
 				FAADA12F1CF6F0F2003DF266 /* UrlRouter.swift */,
+				289590982039213500E5B803 /* UrlPattern.swift */,
 				2895909B203921AB00E5B803 /* String+Extension.swift */,
 			);
 			name = Sources;
@@ -269,6 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2895909A2039213500E5B803 /* UrlPattern.swift in Sources */,
 				28AE5DF71F92C29300C1BA82 /* UrlRouted.swift in Sources */,
 				28AE5DF81F92C29300C1BA82 /* UrlRouter.swift in Sources */,
 				2895909D203921AB00E5B803 /* String+Extension.swift in Sources */,
@@ -280,6 +285,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				289590992039213500E5B803 /* UrlPattern.swift in Sources */,
 				FAADA1311CF6F0F2003DF266 /* UrlRouted.swift in Sources */,
 				FAADA1321CF6F0F2003DF266 /* UrlRouter.swift in Sources */,
 				2895909C203921AB00E5B803 /* String+Extension.swift in Sources */,
