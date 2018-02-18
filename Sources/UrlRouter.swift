@@ -112,17 +112,9 @@ open class UrlRouter {
 		}
 	}
 
-	fileprivate func normalizePath(_ path: String?) -> String {
-		if let path = path?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines), path.count > 0 {
-			return "/" + path.trimmingCharacters(in: self.slashCharacterSet)
-		} else {
-			return "/"
-		}
-	}
-
 	fileprivate func compilePattern(_ pattern: String) -> CompiledPattern {
 		// Escape pattern
-		let compiled = NSMutableString(string: NSRegularExpression.escapedPattern(for: self.normalizePath(pattern)))
+		let compiled = NSMutableString(string: NSRegularExpression.escapedPattern(for: pattern.normalizedPath()))
 
 		// Unescape path parameters
 		regexReplace(self.unescapePattern, replacement: "$1", target: compiled)
@@ -188,7 +180,7 @@ open class UrlRouter {
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
 	open func route(for url: URL) -> UrlRouted? {
-		let path = self.normalizePath(url.path)
+		let path = url.path.normalizedPath()
 		let range = NSMakeRange(0, path.count)
 
 		for pattern in patterns {
@@ -253,18 +245,5 @@ open class UrlRouter {
 			return false
 		}
 	}
-
-}
-
-private extension String {
-
-	#if swift(>=4.0)
-	#else
-
-		var count: Int {
-			return self.characters.count
-		}
-
-	#endif
 
 }
