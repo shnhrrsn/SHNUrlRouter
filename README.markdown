@@ -22,8 +22,8 @@ Drag the `*.swift` files from this repository into your project.
 
 Setting up the router is as simple as defining a couple of routes and providing a handler to be triggered when they’re dispatched.
 
-```
-let router = UrlRouter()
+```swift
+var router = UrlRouter()
 
 router.register("feed") { [weak self] (parameters) in
 	self?.tabBarController.selectedIndex = 0
@@ -103,7 +103,7 @@ func application(application: UIApplication, openURL url: NSURL, sourceApplicati
 
 ```swift
 class AppDelegate: UIResponder, UIApplicationDelegate {
-	private let router = UrlRouter()
+	private var router = UrlRouter()
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool {
 		self.router.add("id", pattern: "[0-9]+")
@@ -126,7 +126,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 			self?.tabBarController.presentViewController(viewController, animated: true, completion: nil)
 		}
-
 	}
 
 	func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
@@ -138,4 +137,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 ## License
 
-MIT -- see the LICENSE file for more information.
+MIT — see the LICENSE file for more information.
