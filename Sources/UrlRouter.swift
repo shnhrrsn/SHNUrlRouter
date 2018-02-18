@@ -25,11 +25,9 @@
 
 import Foundation
 
-private typealias PatternRoutePair = (UrlPattern, UrlRoute)
-
-open class UrlRouter {
-	fileprivate var patterns = [PatternRoutePair]()
-	fileprivate var aliases = [String: String]()
+public struct UrlRouter {
+	private var routes = [UrlRoute]()
+	internal fileprivate(set) var aliases = [String: String]()
 
 	public init() { }
 
@@ -39,7 +37,7 @@ open class UrlRouter {
 	- parameter alias: Name of the parameter
 	- parameter pattern: Regex pattern to match on
 	*/
-	open func add(_ alias: String, pattern: String) {
+	public mutating func add(_ alias: String, pattern: String) {
 		self.aliases[alias] = pattern
 	}
 
@@ -51,8 +49,8 @@ open class UrlRouter {
 
 	- returns: New route instance for the pattern
 	*/
-	@discardableResult open func register(_ routePattern: String, handler: @escaping UrlRouteQuickHandler) -> UrlRoute {
-		return self.register([routePattern], handler: handler)
+	@discardableResult public mutating func register(_ routePattern: String, handler: @escaping UrlRouteQuickHandler) -> UrlRoute {
+		return self.register([ routePattern ], handler: handler)
 	}
 
 	/**
@@ -63,7 +61,7 @@ open class UrlRouter {
 
 	- returns: New route instance for the patterns
 	*/
-	@discardableResult open func register(_ routePatterns: [String], handler: @escaping UrlRouteQuickHandler) -> UrlRoute {
+	@discardableResult public mutating func register(_ routePatterns: [String], handler: @escaping UrlRouteQuickHandler) -> UrlRoute {
 		return self.registerFull(routePatterns) { (url, route, parameters) in
 			handler(parameters)
 		}
@@ -77,8 +75,8 @@ open class UrlRouter {
 
 	- returns: New route instance for the pattern
 	*/
-	@discardableResult open func registerFull(_ routePattern: String, handler: @escaping UrlRouteHandler) -> UrlRoute {
-		return self.registerFull([routePattern], handler: handler)
+	@discardableResult public mutating func registerFull(_ routePattern: String, handler: @escaping UrlRouteHandler) -> UrlRoute {
+		return self.registerFull([ routePattern ], handler: handler)
 	}
 
 	/**
@@ -89,22 +87,12 @@ open class UrlRouter {
 
 	- returns: New route instance for the patterns
 	*/
-	@discardableResult open func registerFull(_ routePatterns: [String], handler: @escaping UrlRouteHandler) -> UrlRoute {
+	@discardableResult public mutating func registerFull(_ routePatterns: [String], handler: @escaping UrlRouteHandler) -> UrlRoute {
 		assert(routePatterns.count > 0, "Route patterns must contain at least one pattern")
 
-		let route = UrlRoute(router: self, pattern: routePatterns.first!, handler: handler)
-		self.register(routePatterns, route: route)
+		let route = UrlRoute(patterns: routePatterns, aliases: self.aliases, handler: handler)
+		self.routes.append(route)
 		return route
-	}
-
-	internal func register(_ routePatterns: [String], route: UrlRoute) {
-		for routePattern in routePatterns {
-			self.patterns.append(PatternRoutePair(self.compilePattern(routePattern), route))
-		}
-	}
-
-	fileprivate func compilePattern(_ pattern: String) -> UrlPattern {
-		return UrlPattern.build(pattern: pattern, aliases: self.aliases)
 	}
 
 	/**
@@ -114,12 +102,12 @@ open class UrlRouter {
 
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
-	open func route(for url: String) -> UrlRouted? {
-		if let url = URL(string: url) {
-			return self.route(for: url)
-		} else {
+	public func route(for url: String) -> UrlRouted? {
+		guard let url = URL(string: url) else {
 			return nil
 		}
+
+		return self.route(for: url)
 	}
 
 	/**
@@ -129,37 +117,16 @@ open class UrlRouter {
 
 	- returns: Instance of SHNUrlRouted with binded parameters if matched, nil if route isn’t supported
 	*/
-	open func route(for url: URL) -> UrlRouted? {
+	public func route(for url: URL) -> UrlRouted? {
 		let path = url.path.normalizedPath()
-		let range = NSMakeRange(0, path.count)
 
-		for pattern in self.patterns {
-			if let match = pattern.0.expression.firstMatch(in: path, options: [], range: range) {
-				var parameters = [String: String]()
-				let parameterKeys = pattern.0.captures
-
-				if parameterKeys.count > 0 {
-					for i in 1..<match.numberOfRanges {
-						let range: NSRange
-
-						#if swift(>=4.0)
-							range = match.range(at: i)
-						#else
-							range = match.rangeAt(i)
-						#endif
-
-						if range.location != NSNotFound {
-							let value = (path as NSString).substring(with: range)
-
-							if i <= parameterKeys.count {
-								parameters[parameterKeys[i - 1]] = value
-							}
-						}
-					}
-				}
-
-				return UrlRouted(route: pattern.1, parameters: parameters)
+		for route in self.routes {
+			guard let routed = route.route(normalizedPath: path) else {
+				continue
 			}
+
+
+			return routed
 		}
 
 		return nil
@@ -172,12 +139,12 @@ open class UrlRouter {
 
 	- returns: True if dispatched, false if unable to dispatch which occurs if url isn’t routable
 	*/
-	open func dispatch(for url: String) -> Bool {
-		if let url = URL(string: url) {
-			return self.dispatch(for: url)
-		} else {
+	public func dispatch(for url: String) -> Bool {
+		guard let url = URL(string: url) else {
 			return false
 		}
+
+		return self.dispatch(for: url)
 	}
 
 	/**
@@ -187,13 +154,13 @@ open class UrlRouter {
 
 	- returns: True if dispatched, false if unable to dispatch which occurs if url isn’t routable
 	*/
-	open func dispatch(for url: URL) -> Bool {
-		if let routed = self.route(for: url) {
-			routed.route.handler(url, routed.route, routed.parameters)
-			return true
-		} else {
+	public func dispatch(for url: URL) -> Bool {
+		guard let routed = self.route(for: url) else {
 			return false
 		}
+
+		routed.route.handler(url, routed.route, routed.parameters)
+		return true
 	}
 
 }

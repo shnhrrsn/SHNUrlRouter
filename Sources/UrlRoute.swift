@@ -28,47 +28,72 @@ import Foundation
 public typealias UrlRouteQuickHandler = ([String: String]) -> Void
 public typealias UrlRouteHandler = (URL, UrlRoute, [String: String]) -> Void
 
-open class UrlRoute: CustomDebugStringConvertible {
-
-	fileprivate weak var router: UrlRouter?
+public struct UrlRoute: CustomDebugStringConvertible {
 
 	/** Original route pattern this route was created with */
-	open let pattern: String
+	public let pattern: String
+
+	/** Compiled patterns */
+	private let patterns: [UrlPattern]
 
 	/** Route handler to use during dispatching */
-	open let handler: UrlRouteHandler
+	public let handler: UrlRouteHandler
 
-	open var debugDescription: String {
+	public var debugDescription: String {
 		return self.pattern
 	}
 
-	public init(router: UrlRouter, pattern: String, handler: @escaping UrlRouteHandler) {
-		self.pattern = pattern
-		self.router = router
+	public init(patterns: [String], aliases: [String: String] = [:], handler: @escaping UrlRouteHandler = { _,_,_ in }) {
+		self.pattern = patterns[0]
 		self.handler = handler
+		self.patterns = patterns.map { UrlPattern.build(pattern: $0, aliases: aliases) }
 	}
 
-	/**
-	Add a route pattern alias to this route
-
-	- parameter pattern: Route pattern
-
-	- returns: Current route instance for chaining
-	*/
-	open func addAlias(_ pattern: String) -> UrlRoute {
-		return self.addAliases([pattern])
+	public func route(for url: URL) -> UrlRouted? {
+		return self.route(normalizedPath: url.path.normalizedPath())
 	}
 
-	/**
-	Add route pattern aliases to this route
+	public func route(for url: String) -> UrlRouted? {
+		return self.route(normalizedPath: url.normalizedPath())
+	}
 
-	- parameter patterns: Route patterns
+	internal func route(normalizedPath path: String) -> UrlRouted? {
+		let range = NSMakeRange(0, path.count)
 
-	- returns: Current route instance for chaining
-	*/
-	open func addAliases(_ patterns: [String]) -> UrlRoute {
-		self.router?.register(patterns, route: self)
-		return self
+		for pattern in self.patterns {
+			guard let match = pattern.expression.firstMatch(in: path, options: [ ], range: range) else {
+				continue
+			}
+
+			var parameters = [String: String]()
+			let parameterKeys = pattern.captures
+
+			if parameterKeys.count > 0 {
+				for i in 1..<match.numberOfRanges {
+					let range: NSRange
+
+					#if swift(>=4.0)
+						range = match.range(at: i)
+					#else
+						range = match.rangeAt(i)
+					#endif
+
+					guard range.location != NSNotFound else {
+						continue
+					}
+
+					let value = (path as NSString).substring(with: range)
+
+					if i <= parameterKeys.count {
+						parameters[parameterKeys[i - 1]] = value
+					}
+				}
+			}
+
+			return UrlRouted(route: self, parameters: parameters)
+		}
+
+		return nil
 	}
 
 }
