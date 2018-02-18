@@ -25,21 +25,17 @@
 
 import Foundation
 
-open class UrlRouted: CustomDebugStringConvertible {
-	open let route: UrlRoute
-	open let parameters: [String: String]
+public struct UrlRouted: CustomDebugStringConvertible {
 
-	public init(route: UrlRoute, parameters: [String: String]) {
-		self.route = route
-		self.parameters = parameters
-	}
+	let route: UrlRoute
+	let parameters: [String: String]
 
-	open var debugDescription: String {
-		if self.parameters.count > 0 {
-			return "\(self.route): \(self.parameters)"
-		} else {
+	public var debugDescription: String {
+		guard self.parameters.count > 0 else {
 			return "\(self.route): (no parameters)"
 		}
+
+		return "\(self.route): \(self.parameters)"
 	}
 
 }
