@@ -25,9 +25,6 @@
 
 import Foundation
 
-@available(*, deprecated: 1.2, renamed: "UrlRouted", message: "Use non-prefixed UrlRouted instead")
-public typealias SHNUrlRouted = UrlRouted
-
 open class UrlRouted: CustomDebugStringConvertible {
 	open let route: UrlRoute
 	open let parameters: [String: String]

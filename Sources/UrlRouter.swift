@@ -32,9 +32,6 @@ private func regexReplace(_ expression: NSRegularExpression, replacement: String
 	expression.replaceMatches(in: target, options: [], range: NSMakeRange(0, target.length), withTemplate: replacement)
 }
 
-@available(*, deprecated: 1.2, renamed: "UrlRouter", message: "Use non-prefixed UrlRouter instead")
-public typealias SHNUrlRouter = UrlRouter
-
 open class UrlRouter {
 	fileprivate var patterns = [PatternRoutePair]()
 	fileprivate var aliases = [String: String]()
