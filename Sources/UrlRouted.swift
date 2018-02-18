@@ -23,8 +23,6 @@
 //	SOFTWARE.
 //
 
-import Foundation
-
 public struct UrlRouted: CustomDebugStringConvertible {
 
 	let route: UrlRoute

@@ -23,8 +23,6 @@
 //	SOFTWARE.
 //
 
-import Foundation
-
 public typealias UrlRouteQuickHandler = ([String: String]) -> Void
 public typealias UrlRouteHandler = (URL, UrlRoute, [String: String]) -> Void
 

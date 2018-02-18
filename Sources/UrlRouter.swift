@@ -23,8 +23,6 @@
 //	SOFTWARE.
 //
 
-import Foundation
-
 public struct UrlRouter {
 	private var routes = [UrlRoute]()
 	internal fileprivate(set) var aliases = [String: String]()
