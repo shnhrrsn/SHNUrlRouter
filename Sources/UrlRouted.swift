@@ -28,6 +28,18 @@ public struct UrlRouted: CustomDebugStringConvertible {
 	let route: UrlRoute
 	let parameters: [String: String]
 
+	public func contains(_ parameter: String) -> Bool {
+		return self.parameters[parameter] != nil
+	}
+
+	public func get(_ parameter: String, default: String? = nil) -> String? {
+		return self.parameters[parameter] ?? `default`
+	}
+
+	public subscript(parameter: String) -> String? {
+		return self.parameters[parameter]
+	}
+
 	public var debugDescription: String {
 		guard self.parameters.count > 0 else {
 			return "\(self.route): (no parameters)"
